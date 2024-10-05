@@ -11,16 +11,29 @@
       rel="stylesheet"
     />
     <meta name="description" content="" />
+    <script
+      src="https://kit.fontawesome.com/cc75d89bda.js"
+      crossorigin="anonymous"
+    ></script>
     <link rel="stylesheet" href="./assets/style.css" />
   </head>
   <body>
+    <div id="mainModal" class="modal">
+      <div class="galleryInterface content">
+        <h3 class="titleGallery">Galerie photo</h3>
+        <div class="worksWithIconTrash"></div>
+        <hr />
+        <button class="addPicture">Ajouter une photo</button>
+        <i class="fa-solid fa-xmark closeGallery"></i>
+      </div>
+    </div>
     <header>
       <h1>Sophie Bluel <span>Architecte d'intérieur</span></h1>
       <nav>
         <ul>
           <li>projets</li>
           <li>contact</li>
-          <li><a href="login.html">login</a></li>
+          <li><a id="login-link">login</a></li>
           <li><img src="./assets/icons/instagram.png" alt="Instagram" /></li>
         </ul>
       </nav>
@@ -50,7 +63,12 @@
         </article>
       </section>
       <section id="portfolio">
-        <h2>Mes Projets</h2>
+        <div class="beforeContainers">
+          <h2>Mes Projets</h2>
+          <p class="modifyButton">
+            <i class="fa-sharp fa-regular fa-pen-to-square"></i>modifier
+          </p>
+        </div>
         <div class="categories"></div>
         <div class="gallery"></div>
       </section>

@@ -1,13 +1,20 @@
-//Variables globales
+const GALLERY_CONTAINER = document.querySelector('.gallery');
+const CATEGORIES_CONTAINER = document.querySelector('.categories');
+const LOGIN_LINK = document.querySelector('#login-link');
+const MODIFY_BUTTON = document.querySelector('.modifyButton');
+const MAIN_MODAL = document.querySelector('#mainModal');
 
-const galleryContainer = document.querySelector('.gallery');
-const categoriesContainer = document.querySelector('.categories');
+const API_WORKS = 'http://localhost:5678/api/works';
+const API_CATEGORIES = 'http://localhost:5678/api/categories';
 
-// tableau pour stocker les data
-let everyWorks = [];
+// Tableau pour stocker les data
+let allWorks = [];
 
-//Méthode qui retourne une balise figure img et figcaption
-
+/**
+ * Crée une balise figure contenant une image et une caption pour un travail donné.
+ * @param {Object} work - Le travail à afficher.
+ * @returns {HTMLElement} La balise figure créée.
+ */
 const createWorkFigure = (work) => {
   const figure = document.createElement('figure');
   const image = document.createElement('img');
@@ -20,77 +27,80 @@ const createWorkFigure = (work) => {
   return figure;
 };
 
-//Méthode qui retourne toutes les données
-
-const API = 'http://localhost:5678/api/works';
-const fetchDataAndDisplay = async () => {
+/**
+ * Récupère de manière asynchrone les œuvres et les catégories depuis les API respectives, traite les données et met à jour l'interface utilisateur.
+ * La fonction effectue les étapes suivantes :
+ *
+ * 1. Récupère les données de `API_WORKS` et `API_CATEGORIES` en parallèle.
+ * 2. Analyse les réponses JSON pour les œuvres et les catégories.
+ * 3. Ajoute une catégorie par défaut 'Tous' au début de la liste des catégories.
+ * 4. Met à jour l'interface utilisateur en appelant `displayWorks` avec toutes les œuvres et `populateFilters` avec les catégories mises à jour.
+ * 5. Enregistre les erreurs rencontrées lors des opérations de récupération dans la console.
+ */
+const fetchWorksAndCategories = async () => {
   try {
-    const result = await fetch(`${API}`);
-    const data = await result.json();
-    console.log(data);
-    everyWorks = data;
-    displayWorks(everyWorks);
-  } catch (error) {
-    console.error(error);
-  }
-};
+    const [worksResponse, categoriesResponse] = await Promise.all([
+      fetch(API_WORKS),
+      fetch(API_CATEGORIES),
+    ]);
 
-// Méthode qui construit les figures et affiche toutes les oeuvres
+    allWorks = await worksResponse.json();
+    const categories = await categoriesResponse.json();
 
-const displayWorks = (works) => {
-  galleryContainer.innerHTML = '';
-  works.forEach((work) => {
-    const figure = createWorkFigure(work);
-    galleryContainer.appendChild(figure);
-  });
-};
-// appel de la fonction qui récupère et affiche les données
-fetchDataAndDisplay();
-
-//Méthode pour chercher les catégories de l'API
-const API_CATEGORY = 'http://localhost:5678/api/categories';
-const fetchCategories = async () => {
-  try {
-    const result = await fetch(`${API_CATEGORY}`);
-    const categories = await result.json();
-
-    //On ajoute le bouton "Tous"
-    categories.unshift({
-      id: 0,
-      name: 'Tous',
-    });
-    console.log(categories);
+    categories.unshift({ id: 0, name: 'Tous' });
+    displayWorks(allWorks);
     populateFilters(categories);
   } catch (error) {
     console.error(error);
   }
 };
 
-fetchCategories();
-
-//Méthode pour créer un bouton qui contient une catégorie (filtre)
-const populateFilters = (categories) => {
-  //S'assurer que le container de categorie est vide
-  categoriesContainer.innerHTML = '';
-  categories.forEach((elementCategory) => {
-    let button = createCategoryButton(elementCategory);
-    categoriesContainer.appendChild(button);
-    setUpFilter(button, elementCategory.id);
+/**
+ * Affiche les travaux dans la galerie.
+ * @param {Array} works - La liste des travaux à afficher.
+ */
+const displayWorks = (works) => {
+  GALLERY_CONTAINER.innerHTML = '';
+  works.forEach((work) => {
+    const figure = createWorkFigure(work);
+    GALLERY_CONTAINER.appendChild(figure);
   });
 };
 
-const createCategoryButton = (elementCategory) => {
-  let myButton = document.createElement('button');
-  myButton.classList.add('filters-design', 'work-filter');
-  if (elementCategory.id === 0) {
-    myButton.classList.add('filter-all', 'filter-active');
-  }
-  myButton.setAttribute('data-filter', elementCategory.id);
-  myButton.innerHTML = elementCategory.name;
-  return myButton;
+/**
+ * Ajoute des boutons de filtre pour les catégories.
+ * @param {Array} categories - La liste des catégories.
+ */
+const populateFilters = (categories) => {
+  CATEGORIES_CONTAINER.innerHTML = '';
+  categories.forEach((category) => {
+    let button = createCategoryButton(category);
+    CATEGORIES_CONTAINER.appendChild(button);
+    setUpFilter(button, category.id);
+  });
 };
 
-// Ajouter un gestionnaire d'événements au clic et appeler la méthode filterWorks
+/**
+ * Crée un bouton pour une catégorie donnée.
+ * @param {Object} category - La catégorie à afficher.
+ * @returns {HTMLElement} Le bouton créé.
+ */
+const createCategoryButton = (category) => {
+  let button = document.createElement('button');
+  button.classList.add('filters-design', 'work-filter');
+  if (category.id === 0) {
+    button.classList.add('filter-all', 'filter-active');
+  }
+  button.setAttribute('data-filter', category.id);
+  button.innerHTML = category.name;
+  return button;
+};
+
+/**
+ * Configure le filtre pour un bouton donné.
+ * @param {HTMLElement} button - Le bouton à configurer.
+ * @param {number} categoryId - L'ID de la catégorie.
+ */
 const setUpFilter = (button, categoryId) => {
   button.addEventListener('click', (event) => {
     event.preventDefault();
@@ -99,7 +109,10 @@ const setUpFilter = (button, categoryId) => {
   });
 };
 
-//Pour gérer l'activation ou non avec le Style CSS
+/**
+ * Style le bouton actif.
+ * @param {HTMLElement} button - Le bouton à styliser.
+ */
 const setActiveFilter = (button) => {
   document.querySelectorAll('.work-filter').forEach((workFilter) => {
     workFilter.classList.remove('filter-active');
@@ -107,16 +120,113 @@ const setActiveFilter = (button) => {
   button.classList.add('filter-active');
 };
 
-// Méthode pour filtrer et afficher les oeuvres
+/**
+ * Filtre et affiche les travaux en fonction de la catégorie sélectionnée.
+ * @param {number} categoryId - L'ID de la catégorie à filtrer.
+ */
 const filterWorks = (categoryId) => {
-  if (categoryId === 0) {
-    // par défaut on affiche toutes les oeuvres
-    displayWorks(everyWorks);
+  const filteredWorks =
+    categoryId === 0
+      ? allWorks
+      : allWorks.filter((work) => work.categoryId === categoryId);
+  displayWorks(filteredWorks);
+};
+
+/**
+ * Vérifie si l'utilisateur est connecté et met à jour l'UI.
+ * @returns {boolean} true si l'utilisateur est connecté, false sinon.
+ */
+const checkUserStatus = () => {
+  const token = localStorage.getItem('token');
+  const isConnected = !!token;
+  LOGIN_LINK.innerHTML = isConnected ? 'logout' : 'login';
+  CATEGORIES_CONTAINER.style.display = isConnected ? 'none' : 'flex';
+  MODIFY_BUTTON.style.visibility = isConnected ? 'visible' : 'hidden';
+  const banner = document.createElement('div');
+  banner.classList.add('banner');
+  banner.innerHTML = isConnected
+    ? '<p><i class="fa-regular fa-pen-to-square"></i>Mode édition</p>'
+    : '';
+  document.body.insertBefore(banner, document.body.firstChild);
+  banner.style.display = isConnected ? 'flex' : 'none';
+  return isConnected;
+};
+
+const handleLoginClick = () => {
+  if (checkUserStatus()) {
+    localStorage.removeItem('token');
+    checkUserStatus();
+    window.location.href = 'index.html';
   } else {
-    const filteredWorks = everyWorks.filter(
-      (work) => work.categoryId === categoryId
-    );
-    // Affichage selon la catégorie séléctionnée
-    displayWorks(filteredWorks);
+    window.location.href = 'login.html';
   }
+};
+
+LOGIN_LINK.addEventListener('click', handleLoginClick);
+
+// Initiales appels fonctions
+fetchWorksAndCategories();
+checkUserStatus();
+
+//Fonction pour récupérer les images de l'API et y mettre le logo poubelle
+let trash = [];
+let snaps = [];
+const populateMainModal = async () => {
+  try {
+    const works = await fetch(API_WORKS); // récupération des données depuis l'API
+    let worksData = await works.json();
+    elements.worksIconContainer.innerHTML = '';
+    worksData.forEach((workData) => {
+      let img = document.createElement('img');
+      img.src = workData.imageUrl;
+      snaps[workData.id] = document.createElement('figure');
+      snaps[workData.id].appendChild(img);
+      trash[workData.id] = document.createElement('i');
+      trash[workData.id].classList.add('fa-solid', 'fa-trash-can', 'trash');
+      snaps[workData.id].appendChild(trash[workData.id]);
+      elements.worksIconContainer.appendChild(snaps[workData.id]);
+      let url = `http://localhost:5678/api/works/${workData.id}`;
+
+      trash[workData.id].addEventListener('click', () => {
+        deleteWork(url);
+        MAIN_MODAL.style.display = 'none';
+      });
+    });
+  } catch (error) {
+    console.error('error fetching work', error);
+    throw new Error('Error fetching work data', error);
+  }
+};
+
+const deleteWork = async (url) => {
+  const token = localStorage.getItem('token');
+  if (!token) {
+    alert("vous n'êtes pas connectés");
+    return;
+  }
+  const confirmation = confirm('êtes vous sûr de vouloir supprimer ce work');
+  if (!confirmation) return;
+  try {
+    let response = await fetch(url, {
+      method: 'DELETE',
+      headers: {
+        Accept: 'application/json',
+        Authorization: `Bearer ${token} `,
+      },
+    });
+    if (!response.ok) {
+      return Promise.reject(new Error(`error http ${response.status}`));
+    }
+    console.log('work deleted');
+  } catch (error) {
+    console.error('error deleting work', error);
+  }
+
+  GALLERY_CONTAINER.innerHTML = '';
+
+  // il faut raffraichir la gallerie
+
+  displayWorks(works);
+  await populateMainModal();
+  MAIN_MODAL.style.display = 'none';
 };
