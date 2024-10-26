@@ -3,6 +3,7 @@ const CATEGORIES_CONTAINER = document.querySelector('.categories');
 const LOGIN_LINK = document.querySelector('#login-link');
 const MODIFY_BUTTON = document.querySelector('.modifyButton');
 const MAIN_MODAL = document.querySelector('#mainModal');
+const worksWithIconTrash = document.querySelector('.worksWithIconTrash');
 
 const API_WORKS = 'http://localhost:5678/api/works';
 const API_CATEGORIES = 'http://localhost:5678/api/categories';
@@ -175,7 +176,7 @@ const populateMainModal = async () => {
   try {
     const works = await fetch(API_WORKS); // récupération des données depuis l'API
     let worksData = await works.json();
-    elements.worksIconContainer.innerHTML = '';
+    worksWithIconTrash.innerHTML = '';
     worksData.forEach((workData) => {
       let img = document.createElement('img');
       img.src = workData.imageUrl;
@@ -184,7 +185,7 @@ const populateMainModal = async () => {
       trash[workData.id] = document.createElement('i');
       trash[workData.id].classList.add('fa-solid', 'fa-trash-can', 'trash');
       snaps[workData.id].appendChild(trash[workData.id]);
-      elements.worksIconContainer.appendChild(snaps[workData.id]);
+      worksWithIconTrash.appendChild(snaps[workData.id]);
       let url = `http://localhost:5678/api/works/${workData.id}`;
 
       trash[workData.id].addEventListener('click', () => {
@@ -223,10 +224,13 @@ const deleteWork = async (url) => {
   }
 
   GALLERY_CONTAINER.innerHTML = '';
-
   // il faut raffraichir la gallerie
-
-  displayWorks(works);
+  //displayWorks(works);
   await populateMainModal();
   MAIN_MODAL.style.display = 'none';
 };
+//On ouvre la première modal
+MODIFY_BUTTON.addEventListener('click', async () => {
+  MAIN_MODAL.style.display = 'flex';
+  await populateMainModal();
+});

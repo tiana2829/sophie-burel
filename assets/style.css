@@ -278,7 +278,7 @@ footer nav ul {
 }
 
 .modal div {
-  position: relative;
+  /*position: relative;*/
 }
 
 .modal .content {
@@ -289,7 +289,7 @@ footer nav ul {
   align-items: center;
   flex-direction: column;
   border-radius: 10px;
-  height: 65%;
+  height: 85%;
 }
 
 h3 {
@@ -298,6 +298,11 @@ h3 {
   font-weight: 400;
   line-height: 30.5px;
   text-align: center;
+}
+
+.titleGallery {
+  position: absolute;
+  top: -10%;
 }
 
 .galleryInterface {
@@ -315,6 +320,7 @@ h3 {
   flex-wrap: wrap;
   justify-content: flex-start;
   margin: 50px 120px 40px;
+  position: absolute;
 }
 
 .worksWithIconTrash figure {
@@ -344,9 +350,11 @@ h3 {
 }
 
 .addPicture {
+  position: absolute;
+  bottom: 5%;
   border: none;
-  margin-bottom: 5%;
-  width: 30%;
+  /* margin-bottom: 5%; */
+  width: 150px;
   height: 5vh;
   border-radius: 60px;
   background-color: #1d6154;
@@ -356,17 +364,24 @@ h3 {
   margin-top: 30px;
 }
 
-.galleryClose {
+.galleryInterface {
+  position: relative;
+}
+
+.closeGallery {
   position: absolute;
-  right: 7%;
+  right: 5%;
   top: 5%;
-  font-size: 2vw;
+  font-size: 1.5vw;
   cursor: pointer;
 }
 
 hr {
-  color: black;
-  width: 400px;
+  position: absolute;
+  bottom: 15%;
+  color: #b3b3b3;
+  width: 100%;
+  max-width: 300px;
 }
 
 .titleGallery {
