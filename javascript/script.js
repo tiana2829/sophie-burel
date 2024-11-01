@@ -3,7 +3,9 @@ const CATEGORIES_CONTAINER = document.querySelector('.categories');
 const LOGIN_LINK = document.querySelector('#login-link');
 const MODIFY_BUTTON = document.querySelector('.modifyButton');
 const MAIN_MODAL = document.querySelector('#mainModal');
+const SECOND_MODAL = document.querySelector('#secondModal');
 const worksWithIconTrash = document.querySelector('.worksWithIconTrash');
+const ADDPICTURE = document.querySelector('.addPicture');
 
 const API_WORKS = 'http://localhost:5678/api/works';
 const API_CATEGORIES = 'http://localhost:5678/api/categories';
@@ -233,4 +235,10 @@ const deleteWork = async (url) => {
 MODIFY_BUTTON.addEventListener('click', async () => {
   MAIN_MODAL.style.display = 'flex';
   await populateMainModal();
+});
+//On ouvre la seconde modale
+ADDPICTURE.addEventListener('click', async () => {
+  SECOND_MODAL.style.display = 'flex';
+  //on cache le premier modale
+  MAIN_MODAL.style.display = 'none';
 });

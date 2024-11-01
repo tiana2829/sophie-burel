@@ -17,6 +17,7 @@
     ></script>
     <link rel="stylesheet" href="./assets/style.css" />
   </head>
+
   <body>
     <div id="mainModal" class="modal">
       <div class="galleryInterface content">
@@ -24,7 +25,61 @@
         <div class="worksWithIconTrash"></div>
         <hr />
         <button class="addPicture">Ajouter une photo</button>
-        <i class="fa-solid fa-xmark closeGallery"></i>
+        <i class="fa-solid fa-xmark galleryClose"></i>
+      </div>
+    </div>
+    <!--Seconde modale-->
+    <div id="secondModal" class="modal">
+      <div class="content" id="secondModalContent">
+        <i class="fa-solid fa-xmark galleryClose"></i>
+        <a id="arrow-return" href="#"
+          ><i class="fa-solid fa-arrow-left return"></i
+        ></a>
+        <h2 class="labelSecondModal">Ajout photo</h2>
+        <form
+          action="#"
+          method="post"
+          enctype="multipart/form-data"
+          id="formModal"
+        >
+          <div class="uploadSection">
+            <label for="fileUpload" class="custom-file-upload">
+              <input
+                id="fileUpload"
+                type="file"
+                accept=".jpg,.png"
+                style="display: none"
+              />
+              <i id="iconPreview" class="fa-regular fa-image"></i>
+              <span class="addPhoto"> + Ajouter photo</span>
+            </label>
+            <p class="extensions">jpg, png : 4mo max</p>
+          </div>
+          <div class="imagePreviewContainer">
+            <img
+              id="imagePreview"
+              src=""
+              alt="Prévisualisation"
+              class="imagePreview"
+            />
+          </div>
+
+          <label for="title" class="labelColorFont">Titre</label>
+          <input
+            type="text"
+            id="title"
+            name="title"
+            class="marginHeightBorder"
+          />
+          <label for="category" class="labelColorFont">Catégorie</label>
+          <select
+            id="category"
+            name="category"
+            class="marginHeightBorder"
+          ></select>
+          <hr class="line" />
+          <button type="submit" class="valider">Valider</button>
+        </form>
       </div>
     </div>
     <header>
